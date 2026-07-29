@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イベント出欠回答 - FC TAKAMATSU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #0f172a;
+        }
+        .status-btn.active-yes {
+            background-color: #16a34a;
+            color: white;
+            border-color: #16a34a;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, 0.4);
+        }
+        .status-btn.active-no {
+            background-color: #dc2626;
+            color: white;
+            border-color: #dc2626;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+        }
+        .status-btn.active-pending {
+            background-color: #d97706;
+            color: white;
+            border-color: #d97706;
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+        }
+    </style>
+</head>
+<body>
+<div class="min-h-screen flex items-center justify-center p-0 sm:p-4">
+    <!-- モバイル実機風コンテナ -->
+    <div class="w-full max-w-md bg-slate-50 min-h-screen sm:min-h-[844px] sm:rounded-[40px] shadow-2xl overflow-hidden flex flex-direction flex-col relative border-0 sm:border-[8px] border-slate-800">
+        
+        <!-- ヘッダー (LINEミニアプリ/Web画面イメージ) -->
+        <header class="bg-slate-900 text-white pt-10 pb-4 px-5 sticky top-0 z-20 shadow-md">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white text-sm">
+                        FC
+                    </div>
+                    <div>
+                        <h1 class="text-xs text-slate-400 font-medium">FC TAKAMATSU 出欠管理</h1>
+                        <p class="text-sm font-bold text-slate-100">高松 太郎（#10 / MF）</p>
+                    </div>
+                </div>
+                <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full border border-slate-700">
+                    <i class="fa-brands fa-line text-emerald-400 mr-1"></i>連携中
+                </span>
+            </div>
+        </header>
+
+        <!-- メインコンテンツ領域 -->
+        <main class="flex-1 p-4 overflow-y-auto pb-24 space-y-4">
+
+            <!-- イベント概要カード -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-md">公式戦 第5節</span>
+                    <span class="text-xs text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                        <i class="fa-regular fa-clock mr-1"></i>回答期限: 8/10(水) 23:59
+                    </span>
+                </div>
+
+                <h2 class="text-xl font-bold text-slate-800 leading-tight mb-3">
+                    VS サンライズFC
+                </h2>
+
+                <div class="space-y-2 text-sm text-slate-600 border-t border-slate-100 pt-3">
+                    <div class="flex items-center gap-2.5">
+                        <i class="fa-regular fa-calendar-check text-emerald-600 w-4 text-center"></i>
+                        <span class="font-bold text-slate-800">2026年8月16日(日) 14:00〜17:00</span>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-location-dot text-emerald-600 w-4 text-center"></i>
+                        <span>高松市東部運動公園 サッカー場</span>
+                    </div>
+                    <div class="flex items-center gap-2.5">
+                        <i class="fa-solid fa-shirt text-emerald-600 w-4 text-center"></i>
+                        <span>ユニフォーム：ホーム (青)</span>
+                    </div>
+                </div>
+
+                <!-- 集合時間などのメモ -->
+                <div class="mt-3 bg-amber-50 rounded-lg p-2.5 text-xs text-amber-800 border border-amber-200/60 flex items-start gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600 mt-0.5"></i>
+                    <div>13:00現地集合（W-up開始13:20）。車で来場の方は指定駐車場をご利用ください。</div>
+                </div>
+            </div>
+
+            <!-- 出欠回答アクションエリア（メイン） -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-emerald-600"></i>
+                        あなたの出欠選択
+                    </h3>
+                    <span id="current-status-badge" class="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-500">
+                        未回答
+                    </span>
+                </div>
+
+                <!-- 3大ボタン（ワンタップ選択） -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <button type="button" onclick="selectStatus('yes')" id="btn-yes" 
+                        class="status-btn flex flex-col items-center justify-center p-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-emerald-50 transition-all text-slate-700">
+                        <i class="fa-solid fa-circle-check text-2xl mb-1 text-emerald-600"></i>
+                        <span class="font-bold text-sm">参加</span>
+                    </button>
+
+                    <button type="button" onclick="selectStatus('no')" id="btn-no" 
+                        class="status-btn flex flex-col items-center justify-center p-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-rose-50 transition-all text-slate-700">
+                        <i class="fa-solid fa-circle-xmark text-2xl mb-1 text-rose-600"></i>
+                        <span class="font-bold text-sm">不参加</span>
+                    </button>
+
+                    <button type="button" onclick="selectStatus('pending')" id="btn-pending" 
+                        class="status-btn flex flex-col items-center justify-center p-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 hover:bg-amber-50 transition-all text-slate-700">
+                        <i class="fa-solid fa-circle-question text-2xl mb-1 text-amber-500"></i>
+                        <span class="font-bold text-sm">保留</span>
+                    </button>
+                </div>
+
+                <!-- 補足オプション（クイック選択 & メモ） -->
+                <div class="space-y-3 pt-2">
+                    <label class="block text-xs font-bold text-slate-600">遅刻・早退・車出し（該当項目をチェック）</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="inline-flex items-center gap-1.5 text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-full cursor-pointer text-slate-700">
+                            <input type="checkbox" class="rounded text-emerald-600 focus:ring-0">
+                            <span>遅刻予定</span>
+                        </label>
+                        <label class="inline-flex items-center gap-1.5 text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-full cursor-pointer text-slate-700">
+                            <input type="checkbox" class="rounded text-emerald-600 focus:ring-0">
+                            <span>早退予定</span>
+                        </label>
+                        <label class="inline-flex items-center gap-1.5 text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-full cursor-pointer text-slate-700">
+                            <input type="checkbox" class="rounded text-emerald-600 focus:ring-0">
+                            <span>車提供可(乗車可)</span>
+                        </label>
+                    </div>
+
+                    <div class="pt-1">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">連絡・メモ事項（任意）</label>
+                        <textarea id="comment" rows="2" placeholder="例: 14:30頃の遅刻参加になります。配車可能です。" 
+                            class="w-full p-2.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-slate-800 bg-slate-50/50"></textarea>
+                    </div>
+                </div>
+
+                <!-- 送信ボタン -->
+                <button type="button" onclick="submitAnswer()" 
+                    class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 text-sm">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>回答を送信する</span>
+                </button>
+            </div>
+
+            <!-- 現在の参加メンバー状況概要 -->
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-slate-800 text-sm">チーム全体の回答状況</h3>
+                    <span class="text-xs text-slate-500">回答率 80% (16/20)</span>
+                </div>
+
+                <!-- カウントバー -->
+                <div class="grid grid-cols-3 gap-2 text-center mb-3">
+                    <div class="bg-emerald-50 rounded-xl p-2 border border-emerald-100">
+                        <div class="text-xs text-emerald-700 font-medium">参加</div>
+                        <div class="text-lg font-black text-emerald-700">11名</div>
+                    </div>
+                    <div class="bg-rose-50 rounded-xl p-2 border border-rose-100">
+                        <div class="text-xs text-rose-700 font-medium">不参加</div>
+                        <div class="text-lg font-black text-rose-700">3名</div>
+                    </div>
+                    <div class="bg-amber-50 rounded-xl p-2 border border-amber-100">
+                        <div class="text-xs text-amber-700 font-medium">保留/未</div>
+                        <div class="text-lg font-black text-amber-700">6名</div>
+                    </div>
+                </div>
+
+                <!-- ポジション別内訳 -->
+                <div class="text-xs text-slate-600 space-y-1.5 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <div class="font-bold text-slate-700 mb-1">【参加者のポジション別人数】</div>
+                    <div class="flex justify-between border-b border-slate-200/60 pb-1">
+                        <span>GK: 1名</span>
+                        <span>DF: 4名</span>
+                        <span>MF: 4名</span>
+                        <span>FW: 2名</span>
+                    </div>
+                    <p class="text-[11px] text-emerald-700 font-medium pt-0.5">
+                        <i class="fa-solid fa-circle-info mr-1"></i>GK・DFラインの人数足りてます！
+                    </p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- 送信完了モーダル (JSで制御) -->
+        <div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-xs text-center shadow-2xl animate-bounce-short">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h4 class="text-lg font-bold text-slate-800 mb-1">回答を完了しました</h4>
+                <p class="text-xs text-slate-500 mb-5">LINEのトーク画面に戻って大丈夫です。</p>
+                <button onclick="closeModal()" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl text-xs">
+                    閉じる
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let selectedStatus = null;
+
+    function selectStatus(type) {
+        selectedStatus = type;
+        
+        // 全ボタンのリセット
+        document.querySelectorAll('.status-btn').forEach(btn => {
+            btn.classList.remove('active-yes', 'active-no', 'active-pending');
+        });
+
+        const badge = document.getElementById('current-status-badge');
+
+        if (type === 'yes') {
+            document.getElementById('btn-yes').classList.add('active-yes');
+            badge.textContent = '選択中: 参加';
+            badge.className = 'text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800';
+        } else if (type === 'no') {
+            document.getElementById('btn-no').classList.add('active-no');
+            badge.textContent = '選択中: 不参加';
+            badge.className = 'text-xs font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800';
+        } else if (type === 'pending') {
+            document.getElementById('btn-pending').classList.add('active-pending');
+            badge.textContent = '選択中: 保留';
+            badge.className = 'text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800';
+        }
+    }
+
+    function submitAnswer() {
+        if (!selectedStatus) {
+            alert('「参加」「不参加」「保留」のいずれかを選択してください。');
+            return;
+        }
+        document.getElementById('modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.add('hidden');
+    }
+</script>
+</body>
+</html>
