@@ -1,7 +1,5 @@
 console.log("eventList.js 読み込み OK");
 
-import * as liff from 'https://static.line-scdn.net/liff/edge/2/sdk.js';
-
 async function initLiff() {
   await liff.init({ liffId: "2010961634-PvIMmuiT" });
 
