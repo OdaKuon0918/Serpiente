@@ -1,3 +1,5 @@
+console.log("eventList.js 読み込み OK");
+
 import liff from 'https://static.line-scdn.net/liff/edge/2/sdk.js';
 
 async function initLiff() {
