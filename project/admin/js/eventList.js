@@ -1,21 +1,25 @@
-console.log("eventList.js 読み込み OK");
+import { db } from "./firebase/config.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { saveData } from "./firebase/common.js";
 
 async function initLiff() {
-  await liff.init({ liffId: "2010961634-PvIMmuiT" });
+    await liff.init({ liffId: "2010961634-PvIMmuiT" });
 
-  if (!liff.isLoggedIn()) {
-    liff.login();
-    return;
-  }
+    if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+    }
 
-  const profile = await liff.getProfile();
-  console.log("LINEログイン成功:", profile);
+    const profile = await liff.getProfile();
+
+    // Firestoreにデータを保存
+    await saveData("users", profile.userId,{
+    userId: profile.userId,
+    displayName: profile.displayName
+    });
 }
 
 initLiff();
-
-import { db } from "./firebase/config.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // URLからidを取得
 const params = new URLSearchParams(window.location.search);

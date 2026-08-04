@@ -13,7 +13,9 @@
     <h4 id="eventName"></h4>
     <ul id="eventText"></ul>
   </div>
+  // LIFF SDKはモジュールじゃないらしい。だからグローバル変数として読み込むといけるみたい。
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  // LIFF SDKの読み込みとjsファイルの読み込みは別にしておく。
   <script type="module" src="/project/admin/js/eventList.js"></script>
 </body>
 
