@@ -1,3 +1,19 @@
+import liff from 'https://static.line-scdn.net/liff/edge/2/sdk.js';
+
+async function initLiff() {
+  await liff.init({ liffId: "2010961634-PvIMmuiT" });
+
+  if (!liff.isLoggedIn()) {
+    liff.login();
+    return;
+  }
+
+  const profile = await liff.getProfile();
+  console.log("LINEログイン成功:", profile);
+}
+
+initLiff();
+
 import { db } from "./firebase/config.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
