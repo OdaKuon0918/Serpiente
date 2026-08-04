@@ -113,7 +113,10 @@ document.getElementById("saveButton").addEventListener("click", async () => {
         });
 
     // イベントURLを生成
-    const eventUrl = `http://192.168.11.10:5500/project/admin/eventList.html?id=${eventId}`;
+    const eventUrl = `http://serpiente-nu.vercel.app/project/admin/eventList.html?id=${eventId}`;
+
+    // 評価用　`http://192.168.11.10:5500/project/admin/eventList.html?id=${eventId}`
+    // 本番用　`http://serpiente-nu.vercel.app/project/admin/eventList.html?id=${eventId}`
 
     window.location.href = `complete.html?url=${encodeURIComponent(eventUrl)}`;
     } catch (e) {
