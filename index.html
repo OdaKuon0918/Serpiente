@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 16px;
+    background: #f7f7f7;
+  }
+
+  .container {
+    max-width: 480px; /* スマホ幅 */
+    margin: 0 auto;
+    background: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    /*box-shadow: 0 0 8px rgba(0,0,0,0.1);*/
+  }
+
+  label {
+    display: block;
+    margin-top: 16px;
+    font-weight: bold;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 12px;
+    margin-top: 24px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+  <title>イベント情報入力</title>
+
+</head>
+<body>
+    <div class="container">
+        <h1>イベント情報入力</h1>
+
+        <div class="event-schedule">
+            <p>日程調整</p>            
+            <h4>開始時間</h4>
+                <input type="tel" id="startTime" maxlength="5" onchange="startTime()" placeholder="例: 15:00">
+            <h4>終了時間</h4>
+                <input type="tel" id="endTime" maxlength="5" onchange="endTime()" placeholder="例: 16:00">
+            <h4>日付</h4>
+                <input type="text" id="date" placeholder="日付を選択" />
+            <h4>スケジュール</h4>
+                <textarea type="text" id="schedule" rows="5" placeholder="例: 4月13日(月) 19:00〜23:00"></textarea>
+        </div>
+
+        <div class="event-name">
+            <h4>イベント名</h4>
+            <input type="text" id="eventName" placeholder="イベント名を入力" />
+        </div>
+
+        <button id="saveButton" class="btn-primary">イベントを作る</button>
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+            import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyBoSmU8wqdo7kbhz2AX-MhElmWgk38mVKo",
+                authDomain: "serpiente-7cece.firebaseapp.com",
+                projectId: "serpiente-7cece",
+                storageBucket: "serpiente-7cece.firebasestorage.app",
+                messagingSenderId: "495631387007",
+                appId: "1:495631387007:web:7c300a76254f42ce68724a",
+                measurementId: "G-HPSLVPJQ08"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            // 保存ボタンのクリックイベント
+            document.getElementById("saveButton").addEventListener("click", async () => {
+                const text = document.getElementById("schedule").value;
+                const eventName = document.getElementById("eventName").value;
+
+                if (!text.trim()) {
+                alert("スケジュールが空です。");
+                return;
+                }
+
+                if (!eventName.trim()) {
+                    alert("イベント名が空です。");
+                    return;
+                }
+
+            try {
+                // Firestore に保存
+                const docRef = await addDoc(collection(db, "schedules"), 
+                {
+                    text: text,
+                    eventName: eventName,
+                    createdAt: new Date()
+                });
+
+                // ドキュメントIDを取得
+                const eventId = docRef.id;
+
+                // イベントURLを生成
+                const eventUrl = `http://192.168.11.10:5500/project/eventList.html?id=${eventId}`;
+
+                window.location.href = `create_complete.html?url=${encodeURIComponent(eventUrl)}`;
+
+                } catch (e) {
+                console.error("保存エラー:", e);
+                alert("保存に失敗しました");
+                }
+            });
+        </script>
+    </div>  
+</body>
+<script>
+    // function startTime(){
+    //     const startTimeInput = document.getElementById('startTime');
+    //     var startTimeValue = startTimeInput.value;
+    //     const startTimeHH = startTimeValue.substring(0, 2);
+    //     const startTimeMM = startTimeValue.substring(2, 4);
+    //     const startTime = `${startTimeHH}:${startTimeMM}`;
+    //     startTimeInput.value = startTime;
+    // }
+/*
+    ※成型用の関数と入力値を書き換える関数は分ける。
+        テストしやすい。
+        再利用しやすい。
+*/
+    function formatTime(input) {
+        // 入力値から数字以外の文字を削除（どんな入力でも扱えるようにしたいから）
+        const digits = input.replace(/[^\d]/g, "");
+    
+        // 4桁でない場合、nullを返す（整形出来ない場合を明確にしたい。）
+        if (digits.length !== 4) {
+            return null;
+        }
+
+        const hh = digits.slice(0,2);
+        const mm = digits.slice(2,4);
+
+        return `${hh}:${mm}`;
+    }
+    
+    function startTime() {
+        const startTimeInput = document.getElementById('startTime');
+        const formattedStartTime = formatTime(startTimeInput.value);
+
+        /*
+        ①不正な入力値を勝手に書き換えないようにするため、
+    　  　変換できる時だけ、変換するようにしたい
+        ②ネストを深くしないため。
+        ③引数の戻り値がnullの場合、エラーを起こさないようにする。
+        */
+
+        // データの整形が出来た場合のみ、入力値を書き換える
+        if (formattedStartTime) {
+            startTimeInput.value = formattedStartTime;
+        } 
+    }
+
+    function endTime() {
+        const endTimeInput = document.getElementById('endTime');
+        const formattedEndTime = formatTime(endTimeInput.value);
+       
+        // データの整形が出来た場合のみ、入力値を書き換える
+        if (formattedEndTime) {
+            endTimeInput.value = formattedEndTime;
+        } 
+    }
+
+    flatpickr("#date", {
+        locale: "ja",
+        defaultDate: new Date(),
+        inline: true, // ← カレンダーを常に表示
+        dateFormat: "n月j日(D)", // 形式は使わないが必須
+        onChange: function(selectedDates, dateStr, instance) {
+            // 月移動時は selectedDates が空なので何もしないようにする。
+            if (!selectedDates.length) return;
+
+            // 日付をフォーマット
+            const dateObj = selectedDates[0];
+            const month = dateObj.getMonth() + 1;
+            const day = dateObj.getDate();
+            /*
+            ■曜日を取得して日本語に変換
+            jsでは、配列[番号]でインデックス番号に紐づいている要素を取得することが出来る。
+            date.getDay()で選択された曜日の番号が取得できる。
+            配列["日","月","火","水","木","金","土"]のインデックス番号に紐づいている日本語表記の曜日がweekdayに
+            格納される、という作り。
+            */
+            const weekday = ["日","月","火","水","木","金","土"][dateObj.getDay()];
+            const formattedDate = `${month}月${day}日(${weekday})`;
+
+            // 開始・終了時間を取得
+            const start = document.getElementById("startTime").value;
+            const end = document.getElementById("endTime").value;
+
+            // テキストエリアを取得
+            const scheduleArea = document.getElementById("schedule");
+
+            // 既存の内容に追記（改行付き）
+            const newLine = `${formattedDate} ${start}～${end}`;
+            scheduleArea.value += (scheduleArea.value ? "\n" : "") + newLine;
+        },
+
+        // formatDate: (date, format, locale) => {
+        //     const m = date.getMonth() + 1;
+        //     const d = date.getDate();
+        //     /*
+        //     ■曜日を取得して日本語に変換
+        //     jsでは、配列[番号]でインデックス番号に紐づいている要素を取得することが出来る。
+        //     date.getDay()で選択された曜日の番号が取得できる。
+        //     配列["日","月","火","水","木","金","土"]のインデックス番号に紐づいている日本語表記の曜日がweekdayに
+        //     格納される、という作り。
+        //     */
+        //     const weekday = ["日","月","火","水","木","金","土"][date.getDay()];
+        //     const formattedDate = `${m}月${d}日(${weekday})`;
+        //     return formattedDate;
+        // }
+    });
+</script>
+</html>

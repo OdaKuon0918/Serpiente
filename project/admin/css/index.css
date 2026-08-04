@@ -1,0 +1,5 @@
+.button-container {
+  display: flex;
+  flex-direction: column;   /* ← 縦並びにする */
+  gap: 12px;                /* ← ボタン同士の間隔 */
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/common.css">
+  <link rel="stylesheet" href="./css/player.css">
+  <title>フォーメーション管理</title>
+</head>
+<body>
+  <div class="container">
+    <h1>プレイヤー管理</h1>
+    <form id="playerForm">
+      <div class="form-group">
+        <label for="name">名前</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="number">背番号</label>
+        <input type="text" id="number" name="number" required>
+      </div>
+      <div class="form-group">
+        <label for="position">ポジション</label>
+        <select id="position" name="playerPosition" required>
+          <option value="">選択してください</option>
+          <option value="GK">GK</option>
+          <option value="DF">DF</option>
+          <option value="MF">MF</option>
+          <option value="FW">FW</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-primary" id="saveButton">保存</button>
+    </form>
+  </div>
+
+  <script type="module" src="./js/firebase/common.js"></script>
+  <!-- このjsファイルの中でimportしているため、typeはmoduleにする必要がある。 -->
+  <script type="module" src="./js/player.js"></script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選手登録マスタ管理 - FC TAKAMATSU 管理ポータル</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #0f172a;
+            color: #334155;
+        }
+        .pos-badge-GK { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .pos-badge-DF { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .pos-badge-MF { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .pos-badge-FW { background-color: #ffe4e6; color: #be123c; border: 1px solid #fecdd3; }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-100 flex flex-col font-sans">
+
+    <!-- ヘッダーナビゲーション -->
+    <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-lg border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- チームロゴ＆タイトル -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-black text-white text-lg shadow-md">
+                        FC
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded border border-emerald-500/30">管理者モード</span>
+                            <span class="text-xs text-slate-400 hidden sm:inline">FC TAKAMATSU 管理システム</span>
+                        </div>
+                        <h1 class="text-base font-bold text-slate-100 leading-tight">選手登録マスタ管理</h1>
+                    </div>
+                </div>
+
+                <!-- ナビゲーションメニュー (タブ切替イメージ) -->
+                <nav class="hidden md:flex items-center space-x-1">
+                    <a href="#" class="bg-emerald-600 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-id-card"></i>
+                        <span>選手登録マスタ</span>
+                    </a>
+                    <a href="#" class="text-slate-300 hover:bg-slate-800 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>イベント管理</span>
+                    </a>
+                    <a href="#" class="text-slate-300 hover:bg-slate-800 hover:text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>出席率・スタメン選定</span>
+                    </a>
+                </nav>
+
+                <!-- アカウント / サポート -->
+                <div class="flex items-center gap-3">
+                    <span class="text-xs text-slate-300 font-medium hidden sm:inline">代表：高松 監督</span>
+                    <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 text-sm">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ領域 -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- 概要統計カード -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+                <div class="flex items-center justify-between text-xs text-slate-500 font-medium mb-1">
+                    <span>総登録選手数</span>
+                    <i class="fa-solid fa-users text-slate-400"></i>
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <span id="stat-total" class="text-2xl font-black text-slate-800">22</span>
+                    <span class="text-xs text-slate-500">名</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+                <div class="flex items-center justify-between text-xs text-slate-500 font-medium mb-1">
+                    <span>LINE紐付け完了</span>
+                    <i class="fa-brands fa-line text-emerald-500"></i>
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <span id="stat-linked" class="text-2xl font-black text-emerald-600">18</span>
+                    <span class="text-xs text-slate-500">/ 22名</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+                <div class="flex items-center justify-between text-xs text-amber-700 font-medium mb-1">
+                    <span>未紐付け（要設定）</span>
+                    <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <span id="stat-unlinked" class="text-2xl font-black text-amber-600">4</span>
+                    <span class="text-xs text-slate-500">名</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+                <div class="flex items-center justify-between text-xs text-slate-500 font-medium mb-1">
+                    <span>ポジション内訳</span>
+                    <i class="fa-solid fa-shirt text-slate-400"></i>
+                </div>
+                <div class="text-[11px] font-bold text-slate-600 flex justify-between items-center mt-1">
+                    <span>GK:2</span>
+                    <span>DF:8</span>
+                    <span>MF:8</span>
+                    <span>FW:4</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 選手管理メインパネル -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            
+            <!-- パネルヘッダー & ツールバー -->
+            <div class="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-base font-bold text-slate-800">選手登録データ一覧</h2>
+                    <p class="text-xs text-slate-500 mt-0.5">日本サッカー協会登録データを管理します。LINE初回登録者と紐付けることで自動出欠管理が行えます。</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="openAddModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-plus text-sm"></i>
+                        <span>選手新規登録</span>
+                    </button>
+                    <button onclick="openAutoLinkModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition-all flex items-center gap-1.5">
+                        <i class="fa-brands fa-line text-emerald-400 text-sm"></i>
+                        <span>LINE未紐付け確認 (<span id="unlinked-count-btn">4</span>)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 検索 & フィルターバー -->
+            <div class="p-4 bg-white border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="relative w-full sm:w-72">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="search-input" oninput="filterPlayers()" placeholder="背番号・氏名で検索..." 
+                        class="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-slate-50/50">
+                </div>
+
+                <div class="flex items-center gap-2 w-full sm:w-auto justify-end text-xs">
+                    <span class="text-slate-500 font-medium">絞り込み:</span>
+                    <select id="filter-pos" onchange="filterPlayers()" class="border border-slate-300 rounded-xl px-2.5 py-2 bg-slate-50/50 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="ALL">ポジション（すべて）</option>
+                        <option value="GK">GK (ゴールキーパー)</option>
+                        <option value="DF">DF (ディフェンダー)</option>
+                        <option value="MF">MF (ミッドフィルダー)</option>
+                        <option value="FW">FW (フォワード)</option>
+                    </select>
+
+                    <select id="filter-link" onchange="filterPlayers()" class="border border-slate-300 rounded-xl px-2.5 py-2 bg-slate-50/50 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option value="ALL">LINE連携（すべて）</option>
+                        <option value="LINKED">連携済みのみ</option>
+                        <option value="UNLINKED">未紐付けのみ</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 選手データテーブル -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                            <th class="py-3 px-4 w-16 text-center">背番号</th>
+                            <th class="py-3 px-4">氏名 (協会登録名)</th>
+                            <th class="py-3 px-4">公式ポジション</th>
+                            <th class="py-3 px-4">LINE連携アカウント</th>
+                            <th class="py-3 px-4">状態</th>
+                            <th class="py-3 px-4 text-right pr-6">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="player-table-body" class="divide-y divide-slate-100 text-xs text-slate-700">
+                        <!-- JSで動的にレンダリングされます -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- テーブルフッター -->
+            <div class="p-4 bg-slate-50/50 border-t border-slate-100 text-xs text-slate-500 flex items-center justify-between">
+                <div>全 <span id="showing-count" class="font-bold text-slate-800">22</span> 件の選手を表示中</div>
+                <div class="text-[11px] text-slate-400">※背番号・ポジションは管理者が公式登録データを基に更新してください。</div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- モーダル1: 選手新規登録・編集モーダル -->
+    <div id="player-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-slate-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+                <h3 id="modal-title" class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-user-gear text-emerald-400"></i>
+                    <span>選手マスタデータの編集</span>
+                </h3>
+                <button onclick="closePlayerModal()" class="text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="savePlayer(event)" class="p-6 space-y-4">
+                <input type="hidden" id="edit-player-id">
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">
+                            背番号 <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="number" id="form-number" required min="1" max="99" placeholder="10" 
+                            class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-slate-800">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">
+                            氏名 (協会登録名) <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="form-name" required placeholder="例: 高松 太郎" 
+                            class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium text-slate-800">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">
+                        公式ポジション <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="form-position" value="GK" required class="peer sr-only">
+                            <div class="py-2 text-center text-xs font-bold rounded-xl border border-slate-200 peer-checked:bg-amber-100 peer-checked:border-amber-400 peer-checked:text-amber-800 transition-all">GK</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="form-position" value="DF" class="peer sr-only">
+                            <div class="py-2 text-center text-xs font-bold rounded-xl border border-slate-200 peer-checked:bg-blue-100 peer-checked:border-blue-400 peer-checked:text-blue-800 transition-all">DF</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="form-position" value="MF" class="peer sr-only">
+                            <div class="py-2 text-center text-xs font-bold rounded-xl border border-slate-200 peer-checked:bg-emerald-100 peer-checked:border-emerald-400 peer-checked:text-emerald-800 transition-all">MF</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="form-position" value="FW" class="peer sr-only">
+                            <div class="py-2 text-center text-xs font-bold rounded-xl border border-slate-200 peer-checked:bg-rose-100 peer-checked:border-rose-400 peer-checked:text-rose-800 transition-all">FW</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">
+                        LINEアカウント紐付け
+                    </label>
+                    <select id="form-line-link" class="w-full px-3 py-2 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50 font-medium">
+                        <option value="">-- 未紐付け（LINE初回登録待ち） --</option>
+                        <!-- 動的に未紐付けLINE登録者を注入 -->
+                    </select>
+                    <p class="text-[10px] text-slate-400 mt-1">※メンバーがLINEから初回登録した表示名とアカウントを選択して紐付けます。</p>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closePlayerModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all">
+                        キャンセル
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/30 transition-all">
+                        保存する
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- モーダル2: LINE未紐付け者の確認・照合モーダル -->
+    <div id="autolink-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-200">
+            <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <i class="fa-brands fa-line text-emerald-400 text-base"></i>
+                    <span>初回LINE登録メンバーの紐付け照合</span>
+                </h3>
+                <button onclick="closeAutoLinkModal()" class="text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 flex items-start gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600 mt-0.5"></i>
+                    <div>
+                        <span class="font-bold">LINEで初回登録完了したメンバーが4名います</span>
+                        <p class="text-[11px] text-amber-700 mt-0.5">管理マスタの選手データ（公式名・背番号）と一致するものを選択して紐付けてください。</p>
+                    </div>
+                </div>
+
+                <!-- 未紐付けリスト -->
+                <div id="unlinked-match-list" class="space-y-3 max-h-60 overflow-y-auto pr-1">
+                    <!-- JSで動的生成 -->
+                </div>
+
+                <div class="pt-2 flex justify-end">
+                    <button onclick="closeAutoLinkModal()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold transition-all">
+                        閉じる
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // サンプル初期データ
+        let players = [
+            { id: 1, number: 1, name: "佐藤 健一", position: "GK", lineUser: "佐藤 健一 (@ken1)", lineConnected: true },
+            { id: 2, number: 12, name: "中村 陸", position: "GK", lineUser: null, lineConnected: false },
+            { id: 3, number: 2, name: "田中 拓也", position: "DF", lineUser: "田中 拓也 (@taku_df)", lineConnected: true },
+            { id: 4, number: 3, name: "小林 誠", position: "DF", lineUser: "小林 誠 (@makoto)", lineConnected: true },
+            { id: 5, number: 4, name: "渡辺 翔太", position: "DF", lineUser: "翔太 (@shota_4)", lineConnected: true },
+            { id: 6, number: 5, name: "伊藤 剛", position: "DF", lineUser: null, lineConnected: false },
+            { id: 7, number: 6, name: "山本 大介", position: "MF", lineUser: "山本 (@daisuke_m)", lineConnected: true },
+            { id: 8, number: 7, name: "加藤 裕樹", position: "MF", lineUser: "加藤 裕樹 (@hiroki)", lineConnected: true },
+            { id: 9, number: 8, name: "吉田 駿", position: "MF", lineUser: "吉田 (@shun_y)", lineConnected: true },
+            { id: 10, number: 10, name: "高松 太郎", position: "MF", lineUser: "高松 太郎 (@taro_soccer)", lineConnected: true },
+            { id: 11, number: 11, name: "山田 孝之", position: "FW", lineUser: "山田 孝之 (@yamada_11)", lineConnected: true },
+            { id: 12, number: 9, name: "鈴木 一朗", position: "FW", lineUser: null, lineConnected: false },
+            { id: 13, number: 18, name: "松本 潤", position: "FW", lineUser: "まっつん (@matsujun)", lineConnected: true },
+            { id: 14, number: 14, name: "井上 尚弥", position: "MF", lineUser: null, lineConnected: false }
+        ];
+
+        // 初回登録を済ませたが、マスタにまだ紐付いていないLINE登録者リスト
+        let unlinkedLineProfiles = [
+            { id: 'line_101', displayName: '鈴木 一朗（いちろう）', handle: '@ichiro_fw' },
+            { id: 'line_102', displayName: '井上 尚弥', handle: '@naoya_i' },
+            { id: 'line_103', displayName: '伊藤 剛（GO）', handle: '@go_ito' },
+            { id: 'line_104', displayName: '中村 陸（りく）', handle: '@riku_gk' }
+        ];
+
+        // 初開時ロード
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTable();
+            updateStats();
+        });
+
+        // テーブルレンダリング
+        function renderTable(dataToRender = null) {
+            const list = dataToRender || getFilteredPlayers();
+            const tbody = document.getElementById('player-table-body');
+            tbody.innerHTML = '';
+
+            if (list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-8 text-center text-slate-400">
+                            該当する選手データが見つかりません
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('showing-count').textContent = '0';
+                return;
+            }
+
+            list.sort((a, b) => a.number - b.number);
+
+            list.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition-colors';
+
+                const lineStatusHtml = p.lineConnected
+                    ? `<div class="flex items-center gap-1.5 font-medium text-emerald-700">
+                        <i class="fa-brands fa-line text-emerald-500 text-sm"></i>
+                        <span>${escapeHtml(p.lineUser)}</span>
+                       </div>`
+                    : `<div class="flex items-center gap-1.5 font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 w-max">
+                        <i class="fa-solid fa-link-slash text-xs"></i>
+                        <span>未紐付け (LINE未連携)</span>
+                       </div>`;
+
+                const statusBadgeHtml = p.lineConnected
+                    ? `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">連携OK</span>`
+                    : `<span class="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-100 text-amber-800">登録待ち</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-center font-black text-slate-800 text-sm">#${p.number}</td>
+                    <td class="py-3 px-4 font-bold text-slate-800">${escapeHtml(p.name)}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-lg ${getPosBadgeClass(p.position)}">
+                            ${p.position}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">${lineStatusHtml}</td>
+                    <td class="py-3 px-4">${statusBadgeHtml}</td>
+                    <td class="py-3 px-4 text-right pr-6">
+                        <div class="flex items-center justify-end gap-1.5">
+                            <button onclick="editPlayer(${p.id})" class="p-1.5 text-slate-500 hover:text-emerald-600 hover:bg-slate-100 rounded-lg transition-all" title="編集">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deletePlayer(${p.id})" class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-slate-100 rounded-lg transition-all" title="削除">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('showing-count').textContent = list.length;
+        }
+
+        // ポジションバッジクラス取得
+        function getPosBadgeClass(pos) {
+            return `pos-badge-${pos}`;
+        }
+
+        // フィルター＆検索
+        function getFilteredPlayers() {
+            const search = document.getElementById('search-input').value.trim().toLowerCase();
+            const posFilter = document.getElementById('filter-pos').value;
+            const linkFilter = document.getElementById('filter-link').value;
+
+            return players.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(search) || p.number.toString().includes(search);
+                const matchPos = posFilter === 'ALL' || p.position === posFilter;
+                const matchLink = linkFilter === 'ALL' || 
+                    (linkFilter === 'LINKED' && p.lineConnected) || 
+                    (linkFilter === 'UNLINKED' && !p.lineConnected);
+
+                return matchSearch && matchPos && matchLink;
+            });
+        }
+
+        function filterPlayers() {
+            renderTable();
+        }
+
+        // 統計数値の更新
+        function updateStats() {
+            const total = players.length;
+            const linked = players.filter(p => p.lineConnected).length;
+            const unlinked = total - linked;
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-linked').textContent = linked;
+            document.getElementById('stat-unlinked').textContent = unlinked;
+            document.getElementById('unlinked-count-btn').textContent = unlinked;
+        }
+
+        // モーダル開閉 (選手データ追加・編集)
+        function openAddModal() {
+            document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-user-plus text-emerald-400"></i><span>選手新規データ登録</span>`;
+            document.getElementById('edit-player-id').value = '';
+            document.getElementById('form-number').value = '';
+            document.getElementById('form-name').value = '';
+            
+            // ラジオボタンクリア
+            document.querySelectorAll('input[name="form-position"]').forEach(r => r.checked = false);
+            document.querySelector('input[name="form-position"][value="MF"]').checked = true;
+
+            populateLineSelect();
+            document.getElementById('player-modal').classList.remove('hidden');
+        }
+
+        function editPlayer(id) {
+            const p = players.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-user-gear text-emerald-400"></i><span>選手データの編集 (#${p.number} ${escapeHtml(p.name)})</span>`;
+            document.getElementById('edit-player-id').value = p.id;
+            document.getElementById('form-number').value = p.number;
+            document.getElementById('form-name').value = p.name;
+
+            const radio = document.querySelector(`input[name="form-position"][value="${p.position}"]`);
+            if (radio) radio.checked = true;
+
+            populateLineSelect(p.lineUser);
+            document.getElementById('player-modal').classList.remove('hidden');
+        }
+
+        function closePlayerModal() {
+            document.getElementById('player-modal').classList.add('hidden');
+        }
+
+        // LINE未連携ドロップダウンの設定
+        function populateLineSelect(currentLinkedUser = null) {
+            const select = document.getElementById('form-line-link');
+            select.innerHTML = `<option value="">-- 未紐付け（LINE初回登録待ち） --</option>`;
+
+            if (currentLinkedUser) {
+                const opt = document.createElement('option');
+                opt.value = currentLinkedUser;
+                opt.textContent = `[現在紐付け中] ${currentLinkedUser}`;
+                opt.selected = true;
+                select.appendChild(opt);
+            }
+
+            unlinkedLineProfiles.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = `${u.displayName} (${u.handle})`;
+                opt.textContent = `[LINE未紐付け者] ${u.displayName} (${u.handle})`;
+                select.appendChild(opt);
+            });
+        }
+
+        // 登録・更新処理
+        function savePlayer(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-player-id').value;
+            const number = parseInt(document.getElementById('form-number').value, 10);
+            const name = document.getElementById('form-name').value.trim();
+            const position = document.querySelector('input[name="form-position"]:checked').value;
+            const lineVal = document.getElementById('form-line-link').value;
+
+            if (editId) {
+                // 編集
+                const p = players.find(item => item.id === parseInt(editId, 10));
+                if (p) {
+                    p.number = number;
+                    p.name = name;
+                    p.position = position;
+                    p.lineUser = lineVal || null;
+                    p.lineConnected = !!lineVal;
+                }
+                showToast(`選手データ (#${number} ${name}) を更新しました`);
+            } else {
+                // 新規登録
+                const newId = Date.now();
+                players.push({
+                    id: newId,
+                    number: number,
+                    name: name,
+                    position: position,
+                    lineUser: lineVal || null,
+                    lineConnected: !!lineVal
+                });
+                showToast(`選手データ (#${number} ${name}) を登録しました`);
+            }
+
+            closePlayerModal();
+            renderTable();
+            updateStats();
+        }
+
+        // 削除
+        function deletePlayer(id) {
+            const p = players.find(item => item.id === id);
+            if (!p) return;
+
+            if (confirm(`背番号 #${p.number} ${p.name} の選手データを削除しますか？`)) {
+                players = players.filter(item => item.id !== id);
+                renderTable();
+                updateStats();
+                showToast(`選手データを削除しました`);
+            }
+        }
+
+        // LINE照合モーダル
+        function openAutoLinkModal() {
+            const listContainer = document.getElementById('unlinked-match-list');
+            listContainer.innerHTML = '';
+
+            const unlinkedPlayers = players.filter(p => !p.lineConnected);
+
+            if (unlinkedPlayers.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">現在、未紐付けの選手データはありません。</p>`;
+            } else {
+                unlinkedPlayers.forEach(p => {
+                    const item = document.createElement('div');
+                    item.className = 'p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-2';
+                    item.innerHTML = `
+                        <div>
+                            <div class="font-bold text-xs text-slate-800">#${p.number} ${escapeHtml(p.name)} (${p.position})</div>
+                            <div class="text-[10px] text-slate-400">LINE未接続</div>
+                        </div>
+                        <button onclick="editPlayer(${p.id}); closeAutoLinkModal();" class="text-xs font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg border border-emerald-200 transition-all">
+                            LINEアカウントと紐付ける
+                        </button>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            }
+
+            document.getElementById('autolink-modal').classList.remove('hidden');
+        }
+
+        function closeAutoLinkModal() {
+            document.getElementById('autolink-modal').classList.add('hidden');
+        }
+
+        // ユーティリティ
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 bg-slate-800 text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl z-50 animate-bounce flex items-center gap-2 border border-slate-700';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span>${msg}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+    </script>
+</body>
+</html>

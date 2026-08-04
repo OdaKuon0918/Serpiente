@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>イベント情報入力</title>
+  <style>
+    body { background-color: #0d131f; color: #fff; font-family: sans-serif; padding: 20px; }
+    .form-card { max-width: 500px; margin: 0 auto; background: #1a2332; padding: 20px; border-radius: 8px; }
+    .field { margin-bottom: 15px; }
+    label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 5px; }
+    input, textarea, select { width: 100%; padding: 8px; background: #283548; border: 1px solid #3b4d66; color: #fff; border-radius: 4px; box-sizing: border-box; }
+    .row { display: flex; gap: 10px; }
+    .row .field { flex: 1; }
+    button { width: 100%; padding: 12px; background: #00c853; border: none; color: #fff; font-weight: bold; border-radius: 4px; cursor: pointer; }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+</head>
+<body>
+
+<div class="form-card">
+  <h2>イベント情報入力</h2>
+  <form id="eventForm">
+      <div class="field">
+        <label>カテゴリ</label>
+            <select id="category" name="category">
+              <option value="公式戦">公式戦</option>
+              <option value="練習試合">練習試合</option>
+              <option value="練習">練習</option>
+              <option value="イベント">イベント</option>
+            </select>
+      </div>
+      <div class="field">
+        <label>回答期限</label>
+        <input id="deadline" placeholder="日付を選択" />
+      </div>
+
+    <div class="field">
+      <label>対戦カード / イベント名</label>
+      <input type="text" id="opponent" value="VS サンライズFC">
+    </div>
+
+      <div class="field">
+        <label>開催日</label>
+        <input type="text" id="eventDate" value="2026年8月16日(日)">
+      </div>
+      <div class="field">
+        <label>時間</label>
+        <input type="text" id="eventTime" value="14:00〜17:00">
+      </div>
+
+    <div class="field">
+      <label>開催場所</label>
+      <input type="text" id="location" value="高松市東部運動公園 サッカー場">
+    </div>
+
+    <div class="field">
+      <label>ユニフォーム</label>
+      <input type="text" id="uniform" value="ホーム（青）">
+    </div>
+
+    <div class="field">
+      <label>連絡事項</label>
+      <textarea id="notice">13:00現地集合 (W-up開始13:20)。車でお越しの方は指定駐車場をご利用ください。</textarea>
+    </div>
+
+    <button type="submit">この内容で登録・更新</button>
+  </form>
+</div>
+
+<script>
+    flatpickr("#deadline", {
+        locale: "ja",
+        dateFormat: "Y年n月j日(D)", // 形式は使わないが必須
+        formatDate: (date, format, locale) => {
+            const y = date.getFullYear();
+            const m = date.getMonth() + 1;
+            const d = date.getDate();
+            /*
+            ■曜日を取得して日本語に変換
+            jsでは、配列[番号]でインデックス番号に紐づいている要素を取得することが出来る。
+            date.getDay()で選択された曜日の番号が取得できる。
+            配列["日","月","火","水","木","金","土"]のインデックス番号に紐づいている日本語表記の曜日がweekdayに
+            格納される、という作り。
+            */
+            const weekday = ["日","月","火","水","木","金","土"][date.getDay()];
+            return `${y}年${m}月${d}日(${weekday})`;
+        }
+    });
+
+  document.getElementById('eventForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // 1. 各入力項目から値を取得
+    const eventData = {
+      category: document.getElementById('category').value,
+      deadline: document.getElementById('deadline').value,
+      opponent: document.getElementById('opponent').value,
+      eventDate: document.getElementById('eventDate').value,
+      eventTime: document.getElementById('eventTime').value,
+      location: document.getElementById('location').value,
+      uniform: document.getElementById('uniform').value,
+      notice: document.getElementById('notice').value
+    };
+
+    // 2. ブラウザのストレージ(localStorage)に保存（JSON文字列化）
+    localStorage.setItem('eventData', JSON.stringify(eventData));
+
+    alert('保存しました！表示画面へ移動します。');
+    // 3. 表示画面へ遷移
+    window.location.href = 'attendance.html';
+  });
+</script>
+
+</body>
+</html>

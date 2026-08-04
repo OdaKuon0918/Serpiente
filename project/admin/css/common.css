@@ -1,0 +1,72 @@
+/* 全体の基本設定 */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f7f7f7;
+  -webkit-text-size-adjust: 100%; /* iOSの勝手な拡大防止 */
+}
+
+/* スマホ幅に最適化したコンテナ */
+.container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* ラベル */
+label {
+  display: block;
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 入力系（スマホ向けにタップ領域を広く） */
+input, select, textarea {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* ボタン（スマホ向けに大きめ） */
+.btn-primary {
+  width: 100%;
+  padding: 16px;
+  margin-top: 28px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ボタンのタップ時 */
+.btn-primary:active {
+  background: #0069d9;
+}
+
+/* スマホの横幅が狭い時の微調整 */
+@media (max-width: 360px) {
+  .container {
+    padding: 16px;
+  }
+  input, select, textarea {
+    padding: 12px;
+  }
+  .btn-primary {
+    padding: 14px;
+    font-size: 17px;
+  }
+}
