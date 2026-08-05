@@ -20,7 +20,7 @@ export async function saveData(collectionName, data) {
   ①ユーザーが一意に管理できるため、コレクション内のデータがメンバの数だけで済む。
   ③重複ユーザの心配をしなくていい
 */
-export async function saveUserData(collectionName, userId, data) {
+export async function saveLoginUserData(collectionName, userId, data) {
   try {
     const docRef = await setDoc(doc(db, collectionName, userId), {
       ...data,

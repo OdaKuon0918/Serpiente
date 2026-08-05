@@ -1,6 +1,6 @@
 import { db } from "./firebase/config.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { saveData, saveUserData } from "./firebase/common.js";
+import { saveData, saveLoginUserData } from "./firebase/common.js";
 
 async function initLiff() {
     await liff.init({ liffId: "2010961634-PvIMmuiT" });
@@ -13,9 +13,9 @@ async function initLiff() {
     const profile = await liff.getProfile();
 console.log("Firestore 保存開始");
     // Firestoreにデータを保存
-    await saveUserData("users", profile.userId, {
-    userId: profile.userId,
-    displayName: profile.displayName
+    await saveLoginUserData("users", profile.userId, {
+        userId: profile.userId,
+        displayName: profile.displayName
     });
 console.log("Firestore 保存終了");
 }
