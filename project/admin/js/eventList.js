@@ -1,6 +1,6 @@
 import { db } from "./firebase/config.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { saveData, saveUserId } from "./firebase/common.js";
+import { saveData, saveUserData } from "./firebase/common.js";
 
 async function initLiff() {
     await liff.init({ liffId: "2010961634-PvIMmuiT" });
