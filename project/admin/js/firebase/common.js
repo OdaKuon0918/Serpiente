@@ -1,5 +1,5 @@
 import { db } from "./config.js";
-import { collection, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, doc, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 保存処理
 export async function saveData(collectionName, data) {
