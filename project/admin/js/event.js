@@ -75,7 +75,7 @@ window.onload = () => {
         格納される、という作り。
         */
         const weekday = ["日","月","火","水","木","金","土"][dateObj.getDay()];
-        const formattedDate = `${month}月${day}日(${weekday})`;
+        const formattedDate = `${month}/${day}(${weekday})`;
 
         // 開始・終了時間を取得
         const start = document.getElementById("startTime").value;
@@ -113,10 +113,10 @@ document.getElementById("saveButton").addEventListener("click", async () => {
         });
 
     // イベントURLを生成
-    const eventUrl = `https://serpiente-nu.vercel.app/project/admin/eventList.html?id=${eventId}`;
+    const eventUrl = `http://192.168.11.10:5500/project/admin/attendance.html?id=${eventId}`;
 
-    // 評価用　`http://192.168.11.10:5500/project/admin/eventList.html?id=${eventId}`
-    // 本番用　`http://serpiente-nu.vercel.app/project/admin/eventList.html?id=${eventId}`
+    // 評価用　`http://192.168.11.10:5500/project/admin/attendance.html?id=${eventId}`;
+    // 本番用　`https://serpiente-nu.vercel.app/project/admin/attendance.html?id=${eventId}`;
 
     window.location.href = `complete.html?url=${encodeURIComponent(eventUrl)}`;
     } catch (e) {

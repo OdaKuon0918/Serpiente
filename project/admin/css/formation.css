@@ -1,11 +1,55 @@
-#field {
-  width: 100%;
+.field {
+  background-image: url('../../assets/images/formation/pitch.png'); /* ←この生成画像を指定 */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 50vw;
   height: 100vh;
-  /* cssファイルから見た相対パス */
-  background-image: url("../../assets/images/formation/pitch.png");
-  background-size: cover;
+  position: relative;
+  pointer-events: none; /* ←これで背景がタッチ操作を受け付けなくなる */
+  aspect-ratio: 9 / 16; /* スマホ縦画面に最適化 */
+}
+
+
+#field-container {
+  position: relative;
+  width: 100%;
+  max-width: 380px;   /* スマホ幅に最適化 */
+  margin: 20px auto;
+}
+
+#soccer-field {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+    background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   position: relative;
   touch-action: none;
+}
+
+/* 選手アイコン（スマホ向けに大きめ） */
+.player {
+  position: absolute;
+  text-align: center;
+  cursor: grab;
+  user-select: none;
+  width: 50px;   /* ←アイコン＋名前の幅 */
+}
+
+.player-icon {
+  width: 60px;   /* ←スマホで触りやすいサイズ */
+  height: 60px;
+  background: #1e90ff;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  margin: auto;
+}
+
+.player-name {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
 }

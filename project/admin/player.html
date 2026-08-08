@@ -10,7 +10,6 @@
 <body>
   <div class="container">
     <h1>プレイヤー管理</h1>
-    <form id="playerForm">
       <div class="form-group">
         <label for="name">名前</label>
         <input type="text" id="name" name="name" required>
@@ -27,9 +26,12 @@
           <option value="MF">MF</option>
           <option value="FW">FW</option>
         </select>
+        <div class="detailPosition">
+          <label for="detailPosition">詳細ポジション</label>
+          <select id="detailPosition"></select>
+        </div>
       </div>
-      <button type="submit" class="btn-primary" id="saveButton">保存</button>
-    </form>
+      <button type="button" class="btn-primary" id="saveButton">保存</button>
   </div>
 
   <script type="module" src="./js/firebase/common.js"></script>

@@ -1,22 +1,20 @@
-<!DOCTYPE html>
+<!DOCType html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./css/common.css">
-  <title>イベント一覧画面</title>
+  <link rel="stylesheet" href="./css/eventList.css">
+  <script type="module" src="/project/admin/js/eventList.js"></script>
+  <title>イベント一覧</title>
 </head>
 
 <body>
-  <div class="container">
-    <h1>イベント一覧</h1>
-    <h4 id="eventName"></h4>
-    <ul id="eventText"></ul>
-  </div>
-  <!-- LIFF SDKはモジュールじゃないらしい。だからグローバル変数として読み込むといけるみたい。 -->
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <!-- LIFF SDKの読み込みとjsファイルの読み込みは別にしておく。 -->
-  <script type="module" src="/project/admin/js/eventList.js"></script>
+    <div class="container">
+        <h1>イベント一覧</h1>
+        <div id="schedule-list" class="schedule-list"></div>
+    </div>
 </body>
+
 
 </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/common.css">
+  <link rel="stylesheet" href="./css/attendance.css">
+    <!-- LIFF SDKはモジュールじゃないらしい。だからグローバル変数として読み込むといけるみたい。 -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <!-- LIFF SDKの読み込みとjsファイルの読み込みは別にしておく。 -->
+  <script type="module" src="/project/admin/js/attendance.js"></script>
+  <title>イベント一覧画面</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="attendance-container">
+    <h2>日程候補</h2>
+    <table class="attendance-table" id="attendance-table">
+      <tbody id="attendanceList"></tbody>
+    </table>
+      <button id="attendance-btn" class="attendance-btn">出欠を<br>入力する</button>
+    </div>
+    <div id="attendance-form">
+      <h3>日程候補</h3>
+      <div id="schedule-list"></div>     
+      <h3>コメント</h3>
+      <textarea id="comment" type="text" rows="3"></textarea>
+      <div class="btn-container">
+        <button id="save">保存</button>
+        <button id="cancel">閉じる</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
