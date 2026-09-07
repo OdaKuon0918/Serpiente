@@ -116,6 +116,12 @@ export async function initLiff() {
 
         profile = await liff.getProfile();
         console.log("LIFFユーザー:", profile);
+
+        if (liff.isLoggedIn()) {
+          const params = new URLSearchParams(window.location.search);
+          const eventId = params.get("id");
+          window.location.href = `/project/admin/attendance.html?id=${eventId}`;
+        }
     }
 
     // Firestoreにも保存（共通）
