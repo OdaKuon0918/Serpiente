@@ -4,14 +4,12 @@ import { initLiff, saveData, saveLoginUserData, saveAttendanceStatus, fetchDoc, 
 
 // 変数宣言
 let textData = '';
+let selectedStatus = {};                                    // 押されたボタンのステータスを格納
 
-let selectedStatus = {};    // 押されたボタンのステータスを格納
+const params = new URLSearchParams(window.location.search); 
+const eventId = params.get("id");                           // URLからidを取得
 
-const currentUser = await initLiff();       // ログインユーザのデータを格納
-
-// URLからidを取得
-const params = new URLSearchParams(window.location.search);
-const eventId = params.get("id");
+const currentUser = await initLiff(eventId);                // ログインユーザのデータを格納
 
 // Firestoreからデータを取得して表示
 /*
