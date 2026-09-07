@@ -117,10 +117,22 @@ export async function initLiff(eventId) {
         profile = await liff.getProfile();
         console.log("LIFFユーザー:", profile);
 
-        if (liff.isLoggedIn()) {
-          const params = new URLSearchParams(window.location.search);
-          const eventId = params.get("id");
-          window.location.href = `/project/admin/attendance.html?id=${eventId}`;
+        // ★ 初回ログイン時だけリダイレクトする
+        if (!sessionStorage.getItem("liffLoggedIn")) {
+
+            if (!liff.isLoggedIn()) {
+                liff.login();
+                return;
+            }
+
+            sessionStorage.setItem("liffLoggedIn", "true");
+
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get("id");
+
+            // ★ 初回だけ attendance.html に戻す
+            window.location.href = `/project/admin/attendance.html?id=${eventId}`;
+            return;
         }
     }
 
