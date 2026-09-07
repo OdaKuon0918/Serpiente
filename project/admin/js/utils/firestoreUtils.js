@@ -95,7 +95,6 @@ export async function deleteAll(collectionName) {
 // LINEログインユーザのデータ取得
 export async function initLiff(eventId) {
     const isLocal = location.hostname === "192.168.11.10";
-    const eventId = eventId;
     let profile;
 
     if (isLocal) {
