@@ -63,6 +63,7 @@ document.getElementById("saveButton").addEventListener("click", async () => {
             lineUserID
         });
     } catch (e) {
+        console.error(e);
         alert("保存に失敗しました。");
     }
 
