@@ -267,7 +267,7 @@ async function saveButton() {
         // Firestoreに保存
         await saveAttendanceStatus(userId, eventId, selectedStatus, commentText, displayName);
 
-        // ★ 保存後に一覧を再描画（これが正解）
+        // ★ 保存後に一覧を再描画
         await loadEvent();
 
         // 入力フォームを閉じる

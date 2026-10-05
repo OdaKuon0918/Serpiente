@@ -12,15 +12,15 @@
     <h1>プレイヤー管理</h1>
       <div class="form-group">
         <label for="name">名前</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" required placeholder="例：小田 空歩 → 小田（空）">
 
-        <label for="number">背番号</label>
-        <input type="text" id="number" name="number" required>
+
       </div>
       <div class="form-group">
         <label for="position">ポジション</label>
         <select id="position" name="playerPosition" required>
           <option value="">選択してください</option>
+          <option value="STAFF">スタッフ</option>
           <option value="GK">GK</option>
           <option value="DF">DF</option>
           <option value="MF">MF</option>
@@ -30,6 +30,10 @@
           <label for="detailPosition">詳細ポジション</label>
           <select id="detailPosition"></select>
         </div>
+      </div>
+      <div class="form-group number">
+        <label for="number">背番号</label>
+        <input type="text" id="number" name="number" required>
       </div>
       <button type="button" class="btn-primary" id="saveButton">保存</button>
   </div>

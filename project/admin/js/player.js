@@ -7,10 +7,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
   position.addEventListener("change", () => {
     const positionValue = position.value;
-
     detailPosition.innerHTML = "";
-
     let options = [];
+    const numberArea = document.querySelector(".number");
 
     if (positionValue === "DF") {
       options = ["RSB", "RCB", "LCB", "LSB"];
@@ -20,6 +19,8 @@ window.addEventListener("DOMContentLoaded", () => {
       options = ["ST"];
     } else if (positionValue === "GK") {
       options = ["GK"];
+    } else if (positionValue === "STAFF") {
+      options = ["スタッフ"];
     }
 
     options.forEach(pos => {
@@ -28,6 +29,12 @@ window.addEventListener("DOMContentLoaded", () => {
       option.textContent = pos;
       detailPosition.appendChild(option);
     });
+
+    if (position.value === "STAFF") {
+      numberArea.style.display = "none";
+    } else {
+      numberArea.style.display = "block";
+    }
 
     detailWrapper.style.display = options.length > 0 ? "block" : "none";
   });
@@ -45,9 +52,9 @@ document.getElementById("saveButton").addEventListener("click", async () => {
         return;
     }
 
-    if (!playerNumber.trim()) {
-        alert("背番号が空です。");
-        return;
+    if (playerPosition !== "スタッフ" && !playerNumber.trim()) {
+          alert("背番号が空です。");
+          return;
     }   
 
     if (!playerPosition.trim()) {
@@ -67,5 +74,5 @@ document.getElementById("saveButton").addEventListener("click", async () => {
         alert("保存に失敗しました。");
     }
 
-    alert("登録完了しました。")
+    alert("登録完了しました。\n以上です。お疲れ様でした。")
 });

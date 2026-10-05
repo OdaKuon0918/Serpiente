@@ -100,8 +100,8 @@ export async function initLiff(eventId) {
     if (isLocal) {
         // ★ ローカル用ダミーユーザー
         profile = {
-            userId: "dummy-user-002",
-            displayName: "テスト02"
+            userId: "dummy-user-014",
+            displayName: "テストスタッフ"
         };
         console.log("ローカル → ダミーユーザー使用:", profile);
 
@@ -117,23 +117,23 @@ export async function initLiff(eventId) {
         profile = await liff.getProfile();
         console.log("LIFFユーザー:", profile);
 
-        // ★ 初回ログイン時だけリダイレクトする
-        if (!sessionStorage.getItem("liffLoggedIn")) {
+        // // ★ 初回ログイン時だけリダイレクトする
+        // if (!sessionStorage.getItem("liffLoggedIn")) {
 
-            if (!liff.isLoggedIn()) {
-                liff.login();
-                return;
-            }
+        //     if (!liff.isLoggedIn()) {
+        //         liff.login();
+        //         return;
+        //     }
 
-            sessionStorage.setItem("liffLoggedIn", "true");
+        //     sessionStorage.setItem("liffLoggedIn", "true");
 
-            const params = new URLSearchParams(window.location.search);
-            const eventId = params.get("id");
+        //     const params = new URLSearchParams(window.location.search);
+        //     const eventId = params.get("id");
 
-            // ★ 初回だけ attendance.html に戻す
-            window.location.href = `/project/admin/attendance.html?id=${eventId}`;
-            return;
-        }
+        //     // ★ 初回だけ attendance.html に戻す
+        //     window.location.href = `/project/admin/attendance.html?id=${eventId}`;
+        //     return;
+        // }
     }
 
     // Firestoreにも保存（共通）

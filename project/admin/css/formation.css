@@ -10,6 +10,17 @@
   aspect-ratio: 9 / 16; /* スマホ縦画面に最適化 */
 }
 
+/* ベンチ */
+#bench-container {
+  position: absolute;
+  bottom: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  z-index: 10;
+}
 
 #field-container {
   position: relative;
@@ -38,6 +49,11 @@
   width: 50px;   /* ←アイコン＋名前の幅 */
 }
 
+.bench-player {
+  text-align: center;
+  width: 60px;
+}
+
 .player-icon {
   width: 60px;   /* ←スマホで触りやすいサイズ */
   height: 60px;
@@ -45,11 +61,22 @@
   border-radius: 50%;
   border: 3px solid #fff;
   margin: auto;
+  /* 背番号を中央配置 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .player-name {
   font-size: 13px;
   margin-top: 4px;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.player-number  {
+  font-size: 12px;
+  margin-bottom: 60px;
   color: #fff;
   text-shadow: 1px 1px 2px #000;
 }
