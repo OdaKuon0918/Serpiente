@@ -92,55 +92,90 @@ export async function deleteAll(collectionName) {
   await Promise.all(promises);
 }
 
-// LINEログインユーザのデータ取得
-export async function initLiff(eventId) {
-    const isLocal = location.hostname === "192.168.11.10";
-    let profile;
+export async function initLiff() {
+    try {
+        await liff.init({
+            liffId: "2010961634-PvIMmuiT"
+        });
 
-    if (isLocal) {
-        // ★ ローカル用ダミーユーザー
-        profile = {
-            userId: "dummy-user-014",
-            displayName: "テストスタッフ"
-        };
-        console.log("ローカル → ダミーユーザー使用:", profile);
-
-    } else {
-        // ★ 本番環境（LIFF）
-        await liff.init({ liffId: "2010961634-PvIMmuiT" });
+        console.log("LIFF init成功");
 
         if (!liff.isLoggedIn()) {
+            console.log("未ログイン");
             liff.login();
-            return;
+            return null;
         }
 
-        profile = await liff.getProfile();
-        console.log("LIFFユーザー:", profile);
+        console.log("ログイン済み");
 
-        // // ★ 初回ログイン時だけリダイレクトする
-        // if (!sessionStorage.getItem("liffLoggedIn")) {
+        const profile = await liff.getProfile();
 
-        //     if (!liff.isLoggedIn()) {
-        //         liff.login();
-        //         return;
-        //     }
+        console.log("profile", profile);
 
-        //     sessionStorage.setItem("liffLoggedIn", "true");
+        await saveLoginUserData("users", profile.userId, {
+            userId: profile.userId,
+            displayName: profile.displayName
+        });
 
-        //     const params = new URLSearchParams(window.location.search);
-        //     const eventId = params.get("id");
+        console.log("users保存成功");
 
-        //     // ★ 初回だけ attendance.html に戻す
-        //     window.location.href = `/project/admin/attendance.html?id=${eventId}`;
-        //     return;
-        // }
+        return profile;
+
+    } catch (e) {
+        console.error("initLiffエラー", e);
+        alert(e.message);
     }
-
-    // Firestoreにも保存（共通）
-    await saveLoginUserData("users", profile.userId, profile, {
-        userId: profile.userId,
-        displayName: profile.displayName
-    });
-
-    return profile;
 }
+
+// // LINEログインユーザのデータ取得
+// export async function initLiff(eventId) {
+//     const isLocal = location.hostname === "192.168.11.10";
+//     let profile;
+
+//     if (isLocal) {
+//         // ★ ローカル用ダミーユーザー
+//         profile = {
+//             userId: "dummy-user-014",
+//             displayName: "テストスタッフ"
+//         };
+//         console.log("ローカル → ダミーユーザー使用:", profile);
+
+//     } else {
+//         // ★ 本番環境（LIFF）
+//         await liff.init({ liffId: "2010961634-PvIMmuiT" });
+
+//         if (!liff.isLoggedIn()) {
+//             liff.login();
+//             return;
+//         }
+
+//         profile = await liff.getProfile();
+//         console.log("LIFFユーザー:", profile);
+
+//         // // ★ 初回ログイン時だけリダイレクトする
+//         // if (!sessionStorage.getItem("liffLoggedIn")) {
+
+//         //     if (!liff.isLoggedIn()) {
+//         //         liff.login();
+//         //         return;
+//         //     }
+
+//         //     sessionStorage.setItem("liffLoggedIn", "true");
+
+//         //     const params = new URLSearchParams(window.location.search);
+//         //     const eventId = params.get("id");
+
+//         //     // ★ 初回だけ attendance.html に戻す
+//         //     window.location.href = `/project/admin/attendance.html?id=${eventId}`;
+//         //     return;
+//         // }
+//     }
+
+//     // Firestoreにも保存（共通）
+//     await saveLoginUserData("users", profile.userId, profile, {
+//         userId: profile.userId,
+//         displayName: profile.displayName
+//     });
+
+//     return profile;
+// }

@@ -1,8 +1,7 @@
 import { initLiff, saveLoginUserData } from "./utils/firestoreUtils.js";
 
-const profile = await initLiff();
-
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
+  const profile = await initLiff();
   const position = document.getElementById("position");
   const detailPosition = document.getElementById("detailPosition");
   const detailWrapper = document.querySelector(".detailPosition");
