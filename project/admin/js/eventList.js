@@ -4,6 +4,8 @@ async function loadSchedules() {
   const schedules = await loadAll("schedules");
   const list = document.getElementById("schedule-list");
 
+  console.log(schedules[0].createdAt);
+
   schedules.forEach(item => {
     // 改行で分割
     const dates = item.text.split("\n");
