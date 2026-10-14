@@ -1,6 +1,6 @@
 import { initLiff, saveLoginUserData } from "./utils/firestoreUtils.js";
 
-liff.logout();
+//liff.logout();
 
 let profile;
 
