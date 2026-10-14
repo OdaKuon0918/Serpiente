@@ -1,10 +1,13 @@
 import { initLiff, saveLoginUserData } from "./utils/firestoreUtils.js";
 
+let profile;
+
 window.addEventListener("DOMContentLoaded", async () => {
-  const profile = await initLiff();
   const position = document.getElementById("position");
   const detailPosition = document.getElementById("detailPosition");
   const detailWrapper = document.querySelector(".detailPosition");
+
+  profile = await initLiff();
 
   position.addEventListener("change", () => {
     const positionValue = position.value;
