@@ -1,5 +1,7 @@
 import { initLiff, saveLoginUserData } from "./utils/firestoreUtils.js";
 
+liff.logout();
+
 let profile;
 
 window.addEventListener("DOMContentLoaded", async () => {
