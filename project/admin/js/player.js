@@ -1,5 +1,7 @@
 import { initLiff, saveLoginUserData } from "./utils/firestoreUtils.js";
 
+const profile = await initLiff();
+
 window.addEventListener("DOMContentLoaded", () => {
   const position = document.getElementById("position");
   const detailPosition = document.getElementById("detailPosition");
@@ -40,11 +42,12 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+
 document.getElementById("saveButton").addEventListener("click", async () => {
     const playerName = document.getElementById("name").value;
     const playerNumber = document.getElementById("number").value;
     const playerPosition = document.getElementById("detailPosition").value;
-    const profile = await initLiff();
+    // const profile = await initLiff();
     const lineUserID = profile.userId
 
     if (!playerName.trim()) {
