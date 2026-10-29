@@ -51,8 +51,12 @@ async function loadEvent() {
     }
 
     // テーブル要素を取得し、初期化
-    const table = document.getElementById("attendance-table");
-    table.innerHTML = ""; // 初期化
+    const tableContainer = table.parentElement;
+    tableContainer.style.maxWidth = "100%";
+    tableContainer.style.overflowX = "auto";
+
+    table.style.width = "max-content";
+    table.style.minWidth = "100%";
 
     // テーブルヘッダーの作成
     const headerRow = document.createElement("tr");
@@ -66,7 +70,6 @@ async function loadEvent() {
 
     // ★テキスト列★
     const text = data.text;
-
     const textArray = text.includes("\n") ? text.split("\n") : [text];
 
     textData = textArray;
@@ -82,7 +85,10 @@ async function loadEvent() {
     // ★コメント列★
     const thComment = document.createElement("th");
     thComment.textContent = "コメント";
-    thComment.style.fontSize = '10px';
+    thComment.style.fontSize = "12px";
+    thComment.style.minWidth = "160px";
+    thComment.style.width = "160px";
+    thComment.style.whiteSpace = "nowrap";
     headerRow.appendChild(thComment);
 
     // ヘッダー行をテーブルに追加
@@ -115,7 +121,15 @@ async function loadEvent() {
         // コメント
         const tdComment = document.createElement("td");
         tdComment.textContent = userData.comment || "";
-        tdComment.style.fontSize = "10px";
+
+        tdComment.style.fontSize = "12px";
+        tdComment.style.minWidth = "160px";
+        tdComment.style.width = "160px";
+        tdComment.style.whiteSpace = "normal";
+        tdComment.style.wordBreak = "normal";
+        tdComment.style.overflowWrap = "anywhere";
+        tdComment.style.verticalAlign = "top";
+
         row.appendChild(tdComment);
 
         table.appendChild(row);
