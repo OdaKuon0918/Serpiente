@@ -93,41 +93,118 @@ export async function saveAttendanceStatus(userId, eventId, selectedStatus, comm
 // }
 
 
+export async function initLiff(eventId) {
+    const liffId = "2010961634-PvIMmuiT";
+    const retryKey = `liff-profile-retry-${eventId || "default"}`;
 
-
-export async function initLiff() {
     try {
-        await liff.init({
-            liffId: "2010961634-PvIMmuiT"
-        });
-
-        console.log("LIFF init成功");
+        await liff.init({ liffId });
 
         if (!liff.isLoggedIn()) {
-            console.log("未ログイン");
-            liff.login();
+            // LINE内ブラウザでは liff.login() を呼ばない
+            if (liff.isInClient()) {
+                alert("LINE認証を確認できません。アプリを開き直してください。");
+                return null;
+            }
+
+            liff.login({
+                redirectUri: window.location.href
+            });
             return null;
         }
 
-        const profile = await liff.getProfile();
+        let profile;
 
-        console.log("profile", profile);
+        try {
+            profile = await liff.getProfile();
+        } catch (e) {
+            console.error("プロフィール取得エラー:", e.code, e.message);
+
+            const message = String(e.message || "");
+            const isTokenExpired =
+                /access.?token.*expired|expired.*access.?token/i.test(message);
+
+            if (isTokenExpired) {
+                // 自動再試行は1回だけ
+                if (sessionStorage.getItem(retryKey) !== "1") {
+                    sessionStorage.setItem(retryKey, "1");
+
+                    const url = new URL(
+                        `https://liff.line.me/${liffId}`
+                    );
+
+                    if (eventId) {
+                        url.searchParams.set("id", eventId);
+                    }
+
+                    window.location.replace(url.toString());
+                    return null;
+                }
+
+                sessionStorage.removeItem(retryKey);
+                alert(
+                    "LINE認証を更新できませんでした。\n" +
+                    "この画面を閉じ、LINEのトークからアプリを開き直してください。"
+                );
+                return null;
+            }
+
+            alert("LINEプロフィールを取得できませんでした。アプリを開き直してください。");
+            return null;
+        }
+
+        // プロフィール取得に成功したら再試行フラグを解除
+        sessionStorage.removeItem(retryKey);
 
         await saveLoginUserData("users", profile.userId, {
             userId: profile.userId,
             displayName: profile.displayName
         });
 
-        console.log("users保存成功");
-
         return profile;
 
     } catch (e) {
-        console.error("initLiffエラー", e.code, e.message);
-        alert("LIFFエラー: " + (e.message || String(e)));
+        console.error("LIFF初期化・ユーザー保存エラー:", e.code, e.message);
+        alert("アプリの初期化に失敗しました。時間をおいて再度お試しください。");
         return null;
     }
 }
+
+
+
+// export async function initLiff() {
+//     try {
+//         await liff.init({
+//             liffId: "2010961634-PvIMmuiT"
+//         });
+
+//         console.log("LIFF init成功");
+
+//         if (!liff.isLoggedIn()) {
+//             console.log("未ログイン");
+//             liff.login();
+//             return null;
+//         }
+
+//         const profile = await liff.getProfile();
+
+//         console.log("profile", profile);
+
+//         await saveLoginUserData("users", profile.userId, {
+//             userId: profile.userId,
+//             displayName: profile.displayName
+//         });
+
+//         console.log("users保存成功");
+
+//         return profile;
+
+//     } catch (e) {
+//         console.error("initLiffエラー", e.code, e.message);
+//         alert("LIFFエラー: " + (e.message || String(e)));
+//         return null;
+//     }
+// }
 
 
 // export async function initLiff() {
