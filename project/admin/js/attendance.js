@@ -9,7 +9,11 @@ let selectedStatus = {};                                    // 押されたボ�
 const params = new URLSearchParams(window.location.search); 
 const eventId = params.get("id");                           // URLからidを取得
 
-const currentUser = await initLiff(eventId);                // ログインユーザのデータを格納
+const currentUser = await initLiff();
+
+if (!currentUser) {
+    throw new Error("LINEユーザー情報を取得できませんでした");
+}
 
 // Firestoreからデータを取得して表示
 /*
@@ -256,6 +260,11 @@ textData.forEach((dateText, index) => {
 });
 
 async function saveButton() {
+    // currentUserがnullの場合、処理を中断
+    if (!currentUser) {
+        alert("LINE認証が完了していません。アプリを開き直してください。");
+        return;
+    }
     const saveButton = document.getElementById("save");
 
     saveButton.addEventListener("click", async () => {
