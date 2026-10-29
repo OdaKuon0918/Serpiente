@@ -51,6 +51,7 @@ async function loadEvent() {
     }
 
     // テーブル要素を取得し、初期化
+    const table = document.getElementById("attendance-table");
     const tableContainer = table.parentElement;
     tableContainer.style.maxWidth = "100%";
     tableContainer.style.overflowX = "auto";
