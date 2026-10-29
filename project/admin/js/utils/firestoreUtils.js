@@ -82,23 +82,27 @@ export async function saveAttendanceStatus(userId, eventId, selectedStatus, comm
 
 // 削除処理
 // ★コレクションの全件削除
-export async function deleteAll(collectionName) {
-  const snapshot = await getDocs(collection(db, collectionName));
+// export async function deleteAll(collectionName) {
+//   const snapshot = await getDocs(collection(db, collectionName));
 
-  const promises = snapshot.docs.map(d =>
-    deleteDoc(doc(db, collectionName, d.id))
-  );
+//   const promises = snapshot.docs.map(d =>
+//     deleteDoc(doc(db, collectionName, d.id))
+//   );
 
-  await Promise.all(promises);
-}
+//   await Promise.all(promises);
+// }
+
 
 export async function initLiff() {
+    let step = "LIFF初期化";
+
     try {
         await liff.init({
             liffId: "2010961634-PvIMmuiT"
         });
-
         console.log("LIFF init成功");
+
+        step = "ログイン状態確認";
 
         if (!liff.isLoggedIn()) {
             console.log("未ログイン");
@@ -106,11 +110,12 @@ export async function initLiff() {
             return null;
         }
 
-        console.log("ログイン済み");
+        step = "LINEプロフィール取得";
 
         const profile = await liff.getProfile();
+        console.log("プロフィール取得成功", profile.userId);
 
-        console.log("profile", profile);
+        step = "Firestoreユーザー保存";
 
         await saveLoginUserData("users", profile.userId, {
             userId: profile.userId,
@@ -118,14 +123,52 @@ export async function initLiff() {
         });
 
         console.log("users保存成功");
-
         return profile;
 
     } catch (e) {
-        console.error("initLiffエラー", e);
-        alert(e.message);
+        console.error("失敗した処理:", step, e);
+        alert(
+            "失敗した処理: " + step +
+            "\nエラー: " + (e.message || String(e))
+        );
+        return null;
     }
 }
+
+// export async function initLiff() {
+//     try {
+//         await liff.init({
+//             liffId: "2010961634-PvIMmuiT"
+//         });
+
+//         console.log("LIFF init成功");
+
+//         if (!liff.isLoggedIn()) {
+//             console.log("未ログイン");
+//             liff.login();
+//             return null;
+//         }
+
+//         console.log("ログイン済み");
+
+//         const profile = await liff.getProfile();
+
+//         console.log("profile", profile);
+
+//         await saveLoginUserData("users", profile.userId, {
+//             userId: profile.userId,
+//             displayName: profile.displayName
+//         });
+
+//         console.log("users保存成功");
+
+//         return profile;
+
+//     } catch (e) {
+//         console.error("initLiffエラー", e);
+//         alert(e.message);
+//     }
+// }
 
 // // LINEログインユーザのデータ取得
 // export async function initLiff(eventId) {
