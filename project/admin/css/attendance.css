@@ -142,3 +142,20 @@
 #cancel:hover {
   background-color: #bbb;
 }
+
+/* 参加者名の列を左端に固定 */
+#attendance-table th:first-child,
+#attendance-table td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 2;
+    min-width: 70px;
+    width: 70px;
+    box-sizing: border-box;
+}
+
+/* 参加者名の見出しを最前面にする */
+#attendance-table th:first-child {
+    z-index: 3;
+}
