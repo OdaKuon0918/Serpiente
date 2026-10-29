@@ -261,10 +261,10 @@ textData.forEach((dateText, index) => {
 
 async function saveButton() {
     // currentUserがnullの場合、処理を中断
-    if (!currentUser) {
-        alert("LINE認証が完了していません。アプリを開き直してください。");
-        return;
-    }
+    // if (!currentUser) {
+    //     alert("LINE認証が完了していません。アプリを開き直してください。");
+    //     return;
+    // }
     const saveButton = document.getElementById("save");
 
     saveButton.addEventListener("click", async () => {
